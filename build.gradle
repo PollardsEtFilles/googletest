@@ -1,0 +1,63 @@
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}
+
+apply plugin: 'cpp'
+
+binaries.all {
+  cppCompiler.args '-std=c++0x', '-fvisibility=hidden', '-v'
+  linker.args '-fvisibility=hidden'
+}
+
+model {
+  buildTypes {
+        debug
+  }
+  platforms {
+    x86 {
+      architecture "i386"
+    }
+    x64 {
+      architecture "x86_64"
+    }
+  }
+    
+  components {
+    googletest(NativeLibrarySpec) {
+      targetPlatform "x86"
+      targetPlatform "x64"
+      sources {
+        cpp {
+          source {
+            srcDir "googletest/src"
+            include "*.cc"
+            exclude "gtest-all.cc"
+          }
+          exportedHeaders {
+            srcDir "googletest/include"
+            srcDir "googletest"
+          }
+        }
+      }
+    }
+  }
+}
+
+task installIncludeToHomeLib(type: Copy) {
+  from 'googletest/include'
+  include '**/*.h'
+  into "${System.properties['user.home']}/lib/googletest/include"
+}
+
+task install32BitSharedLibToHomeLib(type: Copy, dependsOn: "installIncludeToHomeLib") {
+  from 'build/binaries/googletestSharedLibrary/x86'
+  include 'lib*'
+  into "${System.properties['user.home']}/lib/googletest"
+}
+
+task install64BitSharedLibToHomeLib(type: Copy, dependsOn: "installIncludeToHomeLib") {
+  from 'build/binaries/googletestSharedLibrary/x64'
+  include 'lib*'
+  into "${System.properties['user.home']}/lib/googletest"
+}
