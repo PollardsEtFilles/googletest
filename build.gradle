@@ -6,8 +6,7 @@ task wrapper(type: Wrapper) {
 apply plugin: 'cpp'
 
 binaries.all {
-  cppCompiler.args '-std=c++0x', '-fvisibility=hidden', '-v'
-  linker.args '-fvisibility=hidden'
+  cppCompiler.args '-std=c++0x', '-v'
 }
 
 model {
@@ -53,11 +52,11 @@ task installIncludeToHomeLib(type: Copy) {
 task install32BitSharedLibToHomeLib(type: Copy, dependsOn: "installIncludeToHomeLib") {
   from 'build/binaries/googletestSharedLibrary/x86'
   include 'lib*'
-  into "${System.properties['user.home']}/lib/googletest"
+  into "${System.properties['user.home']}/lib/googletest/x86"
 }
 
 task install64BitSharedLibToHomeLib(type: Copy, dependsOn: "installIncludeToHomeLib") {
   from 'build/binaries/googletestSharedLibrary/x64'
   include 'lib*'
-  into "${System.properties['user.home']}/lib/googletest"
+  into "${System.properties['user.home']}/lib/googletest/x64"
 }
