@@ -1,15 +1,17 @@
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.6'
+    gradleVersion = '4.7'
 }
 
 apply plugin: 'cpp'
 
-binaries.all {
-  cppCompiler.args '-std=c++0x', '-v'
-}
-
 model {
+  binaries {
+    withType(NativeLibrarySpec) {
+      cppCompiler.args '-std=c++11', '-v'
+    }
+  }
+
   buildTypes {
         debug
   }
